@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import Menu from './Menu';
 import Board from './Board';
-import { addCard } from '../actions';
+import { addCard, editCardTitle } from '../actions';
 
 export const MenuContainer = connect(
     null,
@@ -18,5 +18,10 @@ export const BoardContainer = connect(
         ({
             cards: [...state.cards]
         }),
-    null
+    dispatch =>
+        ({
+            onEditTitle(id, newTitle) {
+                dispatch( editCardTitle(id, newTitle) );
+            }
+        })
 )(Board);

@@ -8,3 +8,10 @@ export const addCard = (title, color) =>
         title,
         color
     });
+
+export const editCardTitle = (id, newTitle) =>
+    ({
+        type: C.EDIT_CARD_TITLE,
+        id,
+        title: newTitle
+    });
