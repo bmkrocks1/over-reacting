@@ -21,15 +21,16 @@ export default class Card extends React.Component {
     constructor(props) {
         super(props);
         this.setEditingTitleState = this.setEditingTitleState.bind(this);
-        this.handleOnKeyDown = this.handleOnKeyDown.bind(this);
+        this.handleOnInput = this.handleOnInput.bind(this);
         this.hoverCard = this.hoverCard.bind(this);
+        this.updateTitleScrollHeight = this.updateTitleScrollHeight.bind(this);
     }
 
     componentDidMount() {
-        window.addEventListener('mousedown', e => {
-            if (e.target.className === 'card-title') {
-                return;
-            }
+        this.updateTitleScrollHeight();
+        window.addEventListener('resize', this.updateTitleScrollHeight);
+        window.addEventListener('mousedown', event => {
+            if (event.target === this._textarea) return;
             if (this.props.title !== this._textarea.value) {
                 this.props.onEditTitle(this.props.id, this._textarea.value);
             }
@@ -37,21 +38,28 @@ export default class Card extends React.Component {
         }, false);
     }
 
-    setEditingTitleState(isEditing) {
-        this.setState({ editingTitle: isEditing });
+    setEditingTitleState(editingTitle) {
+        this.setState({ editingTitle });
     }
 
-    handleOnKeyDown(e) {
-        if (e.key === 'Enter') {
-            this.props.onEditTitle(this.props.id, this._textarea.value);
+    handleOnInput(event) {
+        if (event.keyCode === 13) {
+            if (this.props.title !== this._textarea.value) {
+                this.props.onEditTitle(this.props.id, this._textarea.value);
+            }
             this.setEditingTitleState(false);
-            e.target.blur();
-            return false;
+            event.target.blur();
+            event.preventDefault();
         }
     }
 
     hoverCard(hovering) {
         this.setState({ hovering });
+    }
+
+    updateTitleScrollHeight() {
+        this._textarea.style.height = '23px';
+        this._textarea.style.height = this._textarea.scrollHeight + 'px';
     }
 
     render() {
@@ -75,21 +83,22 @@ export default class Card extends React.Component {
                 outline: 'none',
                 cursor: 'pointer',
                 fontSize: '.875em',
-                height: '1.625em'
+                minHeight: '23px',
+                height: '23px',
+                overflow: 'hidden'
             }
         };
 
         return (
             <div style={{
                     ...style.card,
-                    ...(this.state.hovering || this.state.isEditing ?
+                    ...(this.state.hovering || this.state.editingTitle ?
                         appTheme.palette.cardColor[color][':hover'] :
                         appTheme.palette.cardColor[color])
                 }}
                 onMouseEnter={e => this.hoverCard(true)}
                 onMouseLeave={e => this.hoverCard(false)}>
                 <textarea
-                    className="card-title"
                     ref={ta => this._textarea = ta}
                     style={{
                         ...style.cardTitle, 
@@ -99,7 +108,8 @@ export default class Card extends React.Component {
                     placeholder="Enter title"
                     defaultValue={title}
                     onClick={() => this.setEditingTitleState(true)}
-                    onKeyDown={this.handleOnKeyDown}>
+                    onKeyDown={this.handleOnInput}
+                    onInput={this.updateTitleScrollHeight}>
                 </textarea>
             </div>
         );
