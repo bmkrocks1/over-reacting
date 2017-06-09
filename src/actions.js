@@ -1,17 +1,30 @@
-import C from './constants';
+import { ActionType } from './constants';
 import { v4 } from 'uuid';
 
 export const addCard = (title, color) =>
     ({
-        type: C.ADD_CARD,
+        type: ActionType.ADD_CARD,
         id: v4(),
         title,
         color
     });
 
-export const editCardTitle = (id, newTitle) =>
+export const editCardTitle = (id, title) =>
     ({
-        type: C.EDIT_CARD_TITLE,
+        type: ActionType.EDIT_CARD_TITLE,
         id,
-        title: newTitle
+        title
+    });
+
+export const editCardColor = (id, color) =>
+    ({
+        type: ActionType.EDIT_CARD_COLOR,
+        id,
+        color
+    });
+
+export const removeCard = id =>
+    ({
+        type: ActionType.REMOVE_CARD,
+        id
     });

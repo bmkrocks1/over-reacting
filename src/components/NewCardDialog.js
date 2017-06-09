@@ -8,6 +8,7 @@ import {
     SelectField,
     TextField
 } from 'material-ui';
+import { CardColorMenuItems } from '../constants';
 
 class NewCardDialog extends Component {
     
@@ -73,14 +74,6 @@ class NewCardDialog extends Component {
             />
         ];
 
-        const colorSelections = [
-            { value: 'white', primaryText: 'White' },
-            { value: 'blue', primaryText: 'Blue' },
-            { value: 'green', primaryText: 'Green' },
-            { value: 'red', primaryText: 'Red' },
-            { value: 'yellow', primaryText: 'Yellow' }
-        ];
-
         return (
             <div>
                 <RaisedButton 
@@ -107,7 +100,7 @@ class NewCardDialog extends Component {
                         value={this.state.color}
                         onChange={this.handleColorSelectChange}
                     >
-                        {colorSelections.map((color, i) =>
+                        {CardColorMenuItems.map((color, i) =>
                             <MenuItem key={i} {...color} />
                         )}
                     </SelectField>

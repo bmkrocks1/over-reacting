@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import appTheme from './appTheme';
+import CardActions from './CardActions';
 
 export default class Card extends React.Component {
 
@@ -8,7 +9,9 @@ export default class Card extends React.Component {
         id: PropTypes.string.isRequired,
         title: PropTypes.string.isRequired,
         color: PropTypes.string.isRequired,
-        onEditTitle: PropTypes.func.isRequired
+        onEditTitle: PropTypes.func.isRequired,
+        onColorChange: PropTypes.func.isRequired,
+        onRemoveCard: PropTypes.func.isRequired
     };
 
     _textarea;
@@ -21,6 +24,7 @@ export default class Card extends React.Component {
     constructor(props) {
         super(props);
         this.setEditingTitleState = this.setEditingTitleState.bind(this);
+        this.handleOnMouseDown = this.handleOnMouseDown.bind(this);
         this.handleOnInput = this.handleOnInput.bind(this);
         this.hoverCard = this.hoverCard.bind(this);
         this.updateTitleScrollHeight = this.updateTitleScrollHeight.bind(this);
@@ -29,17 +33,19 @@ export default class Card extends React.Component {
     componentDidMount() {
         this.updateTitleScrollHeight();
         window.addEventListener('resize', this.updateTitleScrollHeight);
-        window.addEventListener('mousedown', event => {
-            if (event.target === this._textarea) return;
-            if (this.props.title !== this._textarea.value) {
-                this.props.onEditTitle(this.props.id, this._textarea.value);
-            }
-            this.setEditingTitleState(false);
-        }, false);
+        window.addEventListener('mousedown', this.handleOnMouseDown, false);
     }
 
     setEditingTitleState(editingTitle) {
         this.setState({ editingTitle });
+    }
+
+    handleOnMouseDown(event) {
+        if (event.target === this._textarea) return;
+        if (this.props.title !== this._textarea.value) {
+            this.props.onEditTitle(this.props.id, this._textarea.value);
+        }
+        this.setEditingTitleState(false);
     }
 
     handleOnInput(event) {
@@ -62,9 +68,14 @@ export default class Card extends React.Component {
         this._textarea.style.height = this._textarea.scrollHeight + 'px';
     }
 
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updateTitleScrollHeight);
+        window.removeEventListener('mousedown', this.handleOnMouseDown);
+    }
+
     render() {
-        const { title, color } = this.props;
-        const style = {
+        const { id, title, color, onColorChange, onRemoveCard } = this.props;
+        const componentStyle = {
             card: {
                 background: '#fff',
                 border: '1px solid #d7d7d7',
@@ -91,17 +102,24 @@ export default class Card extends React.Component {
 
         return (
             <div style={{
-                    ...style.card,
+                    ...componentStyle.card,
                     ...(this.state.hovering || this.state.editingTitle ?
                         appTheme.palette.cardColor[color][':hover'] :
                         appTheme.palette.cardColor[color])
                 }}
                 onMouseEnter={e => this.hoverCard(true)}
                 onMouseLeave={e => this.hoverCard(false)}>
+                <CardActions 
+                    onColorChange={newColor => {
+                        if (newColor !== color) onColorChange(id, newColor);
+                    }} 
+                    onRemoveCard={() =>
+                        onRemoveCard(id)
+                    }/>
                 <textarea
                     ref={ta => this._textarea = ta}
                     style={{
-                        ...style.cardTitle, 
+                        ...componentStyle.cardTitle, 
                         background: this.state.editingTitle ? '#fff' : 'none'
                     }}
                     spellCheck="false"

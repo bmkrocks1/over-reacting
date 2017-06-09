@@ -1,7 +1,12 @@
 import { connect } from 'react-redux';
 import Menu from './Menu';
 import Board from './Board';
-import { addCard, editCardTitle } from '../actions';
+import { 
+    addCard, 
+    editCardTitle, 
+    editCardColor, 
+    removeCard 
+} from '../actions';
 
 export const MenuContainer = connect(
     null,
@@ -22,6 +27,14 @@ export const BoardContainer = connect(
         ({
             onEditTitle(id, newTitle) {
                 dispatch( editCardTitle(id, newTitle) );
+            },
+
+            onColorChange(id, newColor) {
+                dispatch( editCardColor(id, newColor) );
+            },
+
+            onRemoveCard(id) {
+                dispatch( removeCard(id) );
             }
         })
 )(Board);
