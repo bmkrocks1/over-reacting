@@ -54,11 +54,9 @@ const palette = {
     }
 };
 
-const appTheme = getMuiTheme({
+export default getMuiTheme({
     palette: palette,
     appBar: {
         color: palette.primary1Color
     }
 });
-
-export default appTheme;

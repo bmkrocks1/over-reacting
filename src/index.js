@@ -1,15 +1,12 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { Provider } from 'react-redux';
-import storeFactory from './store';
-import App from './components/App';
+import App from './App';
+import 'flexboxgrid/dist/flexboxgrid.css';
+import './styles.css';
 
-const store = storeFactory();
 window.React = React;
 
 render(
-    <Provider store={store}>
-        <App />
-    </Provider>,
-    document.getElementById('react-container')
+    <App />,
+    document.getElementById('root')
 );

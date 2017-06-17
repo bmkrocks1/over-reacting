@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import appTheme from './appTheme';
+import theme from '../theme';
 import CardActions from './CardActions';
 
 export default class Card extends React.Component {
@@ -104,8 +104,8 @@ export default class Card extends React.Component {
             <div style={{
                     ...componentStyle.card,
                     ...(this.state.hovering || this.state.editingTitle ?
-                        appTheme.palette.cardColor[color][':hover'] :
-                        appTheme.palette.cardColor[color])
+                        theme.palette.cardColor[color][':hover'] :
+                        theme.palette.cardColor[color])
                 }}
                 onMouseEnter={e => this.hoverCard(true)}
                 onMouseLeave={e => this.hoverCard(false)}>
